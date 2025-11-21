@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>404 Found - Lost & Found Community</title>
 
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <!-- Google font -->
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
 
   <style>
@@ -80,6 +82,12 @@
 
     /* upload preview */
     .img-preview { max-width:100%; height:96px; object-fit:cover; border-radius:10px; display:block; margin-top:8px; }
+
+    /* small camera button */
+    .cam-btn { display:inline-flex; gap:8px; align-items:center; padding:8px 12px; border-radius:12px; background:#06b6d4; color:white; cursor:pointer; border:none; }
+
+    /* small location button */
+    .loc-btn { display:inline-flex; gap:8px; align-items:center; padding:8px 12px; border-radius:12px; background:#0ea5a9; color:white; cursor:pointer; border:none; }
 
     /* Swipe deck styles */
     .deck { position:relative; width:100%; max-width:520px; height:420px; margin:0 auto; }
@@ -156,8 +164,10 @@
 </head>
 <body class="overflow-x-hidden">
 
+  <!-- Header -->
   <header class="relative z-10 py-8 px-6">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <!-- Title + tagline -->
       <div>
         <h1 id="mainTitle" class="text-4xl font-extrabold tracking-tight text-slate-800 bounce" style="background:linear-gradient(90deg,#0f172a,#075985); -webkit-background-clip:text; color:transparent;">404 Found</h1>
         <div id="tagline" class="text-teal-700 mt-1 text-sm bounce-slow">Where lost things find their way home.</div>
@@ -171,10 +181,13 @@
     </div>
   </header>
 
+  <!-- Main Content -->
   <main class="max-w-7xl mx-auto px-6 py-12">
+    <!-- HERO SECTION (replaced earlier with the approved design) -->
     <section class="text-center mb-24 fade-in relative">
 
       <div class="flex justify-center items-center gap-3 mb-6">
+        <!-- left icon -->
         <svg width="28" height="28" viewBox="0 0 24 24" fill="#1e90ff" class="opacity-80" aria-hidden="true">
           <circle cx="12" cy="5" r="4"/>
           <rect x="9" y="9" width="6" height="10" rx="3"/>
@@ -187,6 +200,7 @@
           <span style="color:#2563eb;">Return What's Found.</span>
         </h2>
 
+        <!-- right icon -->
         <svg width="28" height="28" viewBox="0 0 24 24" fill="#1e90ff" class="opacity-80" aria-hidden="true">
           <circle cx="12" cy="5" r="4"/>
           <rect x="9" y="9" width="6" height="10" rx="3"/>
@@ -196,6 +210,7 @@
       </div>
 
       <div class="flex flex-col md:flex-row gap-10 justify-center items-center mt-10">
+        <!-- Lost Card -->
         <div onclick="openModalById('lostModal')"
           class="w-full max-w-sm p-10 rounded-3xl bg-white shadow-xl transition-all hover:scale-105 cursor-pointer"
           style="background:linear-gradient(to bottom right, #eef6ff, #ffffff); border-radius:25px;">
@@ -206,6 +221,7 @@
           <p class="text-slate-600 mb-2">Report your lost item and we'll help you find it</p>
         </div>
 
+        <!-- Found Card -->
         <div onclick="openModalById('foundModal')"
           class="w-full max-w-sm p-10 rounded-3xl bg-white shadow-xl transition-all hover:scale-105 cursor-pointer"
           style="background:linear-gradient(to bottom right, #e8fff8, #ffffff); border-radius:25px;">
@@ -218,6 +234,7 @@
       </div>
     </section>
 
+    <!-- About -->
     <section class="mb-16 fade-in">
       <div class="ghibli-card p-8 rounded-3xl">
         <h3 class="text-3xl font-bold text-slate-800 mb-4 text-center">About 404 Found</h3>
@@ -225,6 +242,7 @@
       </div>
     </section>
 
+    <!-- How It Works -->
     <section class="mb-20 fade-in">
       <div class="ghibli-card p-12 rounded-3xl">
         <h3 class="text-4xl font-bold text-slate-800 mb-12 text-center tracking-tight">How It Works</h3>
@@ -253,6 +271,7 @@
       </div>
     </section>
 
+    <!-- Recently Found -->
     <section class="mb-16 fade-in">
       <h3 class="text-2xl font-bold text-slate-800 mb-4 text-center">Recently Found Items</h3>
       <div class="max-w-4xl mx-auto">
@@ -262,6 +281,7 @@
       </div>
     </section>
 
+    <!-- Feedback (Rating) -->
     <section class="mb-20 fade-in">
       <h3 class="text-2xl font-bold text-slate-800 mb-6 text-center">Share Your Experience</h3>
       <div class="max-w-2xl mx-auto">
@@ -296,6 +316,8 @@
 
   </main>
 
+  <!-- ----------------- SWIPE + MATCH UI (modal) ----------------- -->
+  <!-- Swipe drawer modal -->
   <div id="swipeModal" class="modal" aria-hidden="true">
     <div class="modal-backdrop" onclick="closeSwipe()" aria-hidden="true"></div>
     <div class="ghibli-card p-6 rounded-2xl max-w-3xl mx-4" style="z-index:95; position:relative;">
@@ -307,7 +329,9 @@
         </div>
       </div>
 
+      <!-- deck -->
       <div class="deck mx-auto" id="deckContainer" aria-live="polite" style="margin-top:6px;">
+        <!-- JS will populate card elements here; up to any number of matches, but we show 3 visible stack -->
         <div id="noItemsPlaceholder" class="text-center text-slate-600" style="display:none;padding-top:120px;">
           <p class="text-lg font-medium mb-1">No matches available right now</p>
           <p class="text-sm">We'll notify you when new matches are found.</p>
@@ -322,6 +346,7 @@
     </div>
   </div>
 
+  <!-- Match Modal (shown after accept) -->
   <div id="matchModal" class="modal" aria-hidden="true" role="dialog" aria-label="Match">
     <div class="modal-backdrop"></div>
     <div class="ghibli-card p-6 rounded-2xl max-w-lg mx-4 text-center" style="z-index:96;">
@@ -334,6 +359,7 @@
     </div>
   </div>
 
+  <!-- Chat Modal (bottom sheet like your screenshot) -->
   <div id="matchChat" class="modal chat-modal" aria-hidden="true" style="align-items:flex-end; padding:0;">
     <div class="modal-backdrop" onclick="closeMatchChat()"></div>
     <div class="chat-modal box" style="z-index:97; position:relative;">
@@ -347,6 +373,7 @@
         </div>
 
         <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
+          <!-- Coupon trigger in header -->
           <button id="discountBtn" onclick="openCoupons()" class="px-3 py-2 bg-green-200 rounded-full font-semibold hover:bg-green-300 transition">View Discounts!</button>
           <button onclick="closeMatchChat()" class="px-3 py-2 text-slate-600 hover:text-slate-800 transition">✕</button>
         </div>
@@ -365,12 +392,14 @@
     </div>
   </div>
 
+  <!-- Coupon Modal (center float, light blue tint) -->
   <div id="couponModal" class="modal" aria-hidden="true" role="dialog" aria-label="Coupons">
     <div class="modal-backdrop" onclick="closeCoupons()"></div>
     <div class="coupon-modal box" style="z-index:98;">
       <button onclick="closeCoupons()" class="absolute top-4 right-6 text-gray-600 text-2xl font-bold hover:text-gray-800">&times;</button>
       <h2 class="text-3xl font-extrabold text-slate-800 mb-6 text-center">Available Discounts</h2>
       <div class="coupon-grid">
+        <!-- 40% -->
         <div class="coupon-card">
           <div class="coupon-badge" style="background:linear-gradient(180deg,#68d391,#2f855a)">40%<div style="font-size:10px;font-weight:700">OFF</div></div>
           <div>
@@ -383,6 +412,7 @@
           </div>
         </div>
 
+        <!-- 50% -->
         <div class="coupon-card">
           <div class="coupon-badge" style="background:linear-gradient(180deg,#63b3ed,#2b6cb0)">50%<div style="font-size:10px;font-weight:700">OFF</div></div>
           <div>
@@ -395,6 +425,7 @@
           </div>
         </div>
 
+        <!-- 60% -->
         <div class="coupon-card">
           <div class="coupon-badge" style="background:linear-gradient(180deg,#f56565,#c53030)">60%<div style="font-size:10px;font-weight:700">OFF</div></div>
           <div>
@@ -407,6 +438,7 @@
           </div>
         </div>
 
+        <!-- 70% -->
         <div class="coupon-card">
           <div class="coupon-badge" style="background:linear-gradient(180deg,#f6ad55,#d97706)">70%<div style="font-size:10px;font-weight:700">OFF</div></div>
           <div>
@@ -423,6 +455,7 @@
     </div>
   </div>
 
+  <!-- Misc Modals: Updates / FAQ / Lost / Found -->
   <div id="updatesModal" class="modal" aria-hidden="true">
     <div class="modal-backdrop" onclick="closeModalById('updatesModal')"></div>
     <div class="ghibli-card p-6 rounded-2xl max-w-2xl mx-4" style="z-index:92;">
@@ -449,6 +482,7 @@
     </div>
   </div>
 
+  <!-- Lost Modal -->
   <div id="lostModal" class="modal" aria-hidden="true">
     <div class="modal-backdrop" onclick="closeModalById('lostModal')"></div>
     <div class="ghibli-card p-6 rounded-2xl max-w-md mx-4" style="z-index:92;">
@@ -474,10 +508,26 @@
           <input id="lostContact" type="email" required class="w-full p-2 border rounded" placeholder="your.email@example.com">
         </div>
 
+        <!-- Simple Choose Image upload (Lost) -->
         <div>
           <label class="block text-sm font-semibold mb-1">Add an image (optional)</label>
-          <input id="lostImageInput" type="file" accept="image/*" class="block w-full" onchange="handleImagePreview(this, 'lostImagePreview')" />
+          <div class="flex items-center gap-3">
+            <input id="lostImageInput" type="file" accept="image/*" capture="environment" class="block w-full" onchange="handleImagePreview(this, 'lostImagePreview')" />
+            <button type="button" class="cam-btn" onclick="triggerFile('lostImageInput')">Use Camera</button>
+          </div>
           <img id="lostImagePreview" class="img-preview" style="display:none;" alt="Lost item preview">
+        </div>
+
+        <!-- Geotag for Lost -->
+        <div>
+          <label class="block text-sm font-semibold mb-1">Add geotag (optional)</label>
+          <div class="flex items-center gap-3">
+            <button type="button" class="loc-btn" onclick="getLocation('lostLat','lostLng','lostLocDisplay')">Add Current Location</button>
+            <button type="button" class="btn-mini" onclick="clearLocation('lostLat','lostLng','lostLocDisplay')">Clear</button>
+          </div>
+          <input type="hidden" id="lostLat">
+          <input type="hidden" id="lostLng">
+          <div id="lostLocDisplay" class="text-slate-600 text-sm mt-2"></div>
         </div>
 
         <button type="submit" class="w-full bg-red-500 text-white py-2 rounded font-semibold">Report Lost Item</button>
@@ -485,6 +535,7 @@
     </div>
   </div>
 
+  <!-- Found Modal -->
   <div id="foundModal" class="modal" aria-hidden="true">
     <div class="modal-backdrop" onclick="closeModalById('foundModal')"></div>
     <div class="ghibli-card p-6 rounded-2xl max-w-md mx-4" style="z-index:92;">
@@ -510,36 +561,38 @@
           <input id="foundContact" type="email" required class="w-full p-2 border rounded" placeholder="your.email@example.com">
         </div>
 
+        <!-- Simple Choose Image upload (Found) -->
         <div>
-            <label class="block text-sm font-semibold mb-1">Add an image + Geotag</label>
-            <input id="foundImageInput" type="file" accept="image/*" **capture="camera"** class="block w-full" onchange="handleImagePreview(this, 'foundImagePreview')" />
-            <img id="foundImagePreview" class="img-preview" style="display:none;" alt="Found item preview">
-            
-            <button type="button" onclick="getFoundLocation()" class="mt-2 w-full bg-blue-500 text-white py-1 rounded text-sm font-semibold">
-                Get Current GPS Location
-            </button>
+          <label class="block text-sm font-semibold mb-1">Add an image (optional)</label>
+          <div class="flex items-center gap-3">
+            <input id="foundImageInput" type="file" accept="image/*" capture="environment" class="block w-full" onchange="handleImagePreview(this, 'foundImagePreview')" />
+            <button type="button" class="cam-btn" onclick="triggerFile('foundImageInput')">Use Camera</button>
+          </div>
+          <img id="foundImagePreview" class="img-preview" style="display:none;" alt="Found item preview">
         </div>
 
-        <div class="text-xs text-slate-500 pt-1">
-            <span class="font-semibold">GPS: </span> 
-            <span id="foundLatDisplay">N/A</span> / 
-            <span id="foundLonDisplay">N/A</span>
-            <input type="hidden" id="foundLat" name="foundLat">
-            <input type="hidden" id="foundLon" name="foundLon">
+        <!-- Geotag for Found -->
+        <div>
+          <label class="block text-sm font-semibold mb-1">Add geotag (optional)</label>
+          <div class="flex items-center gap-3">
+            <button type="button" class="loc-btn" onclick="getLocation('foundLat','foundLng','foundLocDisplay')">Add Current Location</button>
+            <button type="button" class="btn-mini" onclick="clearLocation('foundLat','foundLng','foundLocDisplay')">Clear</button>
+          </div>
+          <input type="hidden" id="foundLat">
+          <input type="hidden" id="foundLng">
+          <div id="foundLocDisplay" class="text-slate-600 text-sm mt-2"></div>
         </div>
+
         <button type="submit" class="w-full bg-emerald-500 text-white py-2 rounded font-semibold">Report Found Item</button>
       </form>
     </div>
   </div>
 
+  <!-- Toast -->
   <div id="couponToast" class="toast" role="status" aria-live="polite">Coupon copied to clipboard</div>
 
+  <!-- ----------------- SCRIPTS ----------------- -->
   <script>
-    /* ========== Global Variables for GPS Data (Simulated Persistence) ========== */
-    // In a real app, this would be stored on a server/database for matching
-    let foundGPS = { lat: null, lon: null };
-    let lostGPS = { lat: 40.7812, lon: -73.9665 }; // Example location (Central Park) for demo distance calculation
-
     /* ========== Utilities ========== */
     function openModalById(id){
       const el = document.getElementById(id);
@@ -558,215 +611,438 @@
     function openSwipe(){ openModalById('swipeModal'); }
     function closeSwipe(){ closeModalById('swipeModal'); }
 
-    /* ========== Geotagging & Distance Meter Logic (NEW) ========== */
-
-    /**
-     * Haversine formula to calculate the distance between two points on the Earth.
-     * @param {number} lat1 - Latitude of point 1
-     * @param {number} lon1 - Longitude of point 1
-     * @param {number} lat2 - Latitude of point 2
-     * @param {number} lon2 - Longitude of point 2
-     * @returns {number} Distance in kilometers
-     */
-    function getDistance(lat1, lon1, lat2, lon2) {
-        const R = 6371; // Earth's radius in kilometers
-        const dLat = (lat2 - lat1) * (Math.PI / 180);
-        const dLon = (lon2 - lon1) * (Math.PI / 180);
-        const a =
-            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
-            Math.sin(dLon / 2) * Math.sin(dLon / 2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c; // Distance in km
-    }
-
-    /**
-     * Requests and stores the current GPS location (Latitude/Longitude).
-     */
-    function getFoundLocation() {
-        if ("geolocation" in navigator) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const lat = position.coords.latitude;
-                    const lon = position.coords.longitude;
-                    
-                    foundGPS.lat = lat;
-                    foundGPS.lon = lon;
-                    
-                    // Update the form fields and display
-                    document.getElementById('foundLat').value = lat;
-                    document.getElementById('foundLon').value = lon;
-                    document.getElementById('foundLatDisplay').textContent = lat.toFixed(4);
-                    document.getElementById('foundLonDisplay').textContent = lon.toFixed(4);
-
-                    alert(`Location captured: Lat ${lat.toFixed(4)}, Lon ${lon.toFixed(4)}`);
-                },
-                (error) => {
-                    alert(`Geolocation error: ${error.message}. Please enable location services.`);
-                    console.error("Geolocation Error:", error);
-                },
-                { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
-            );
-        } else {
-            alert("Geolocation is not supported by this browser.");
-        }
-    }
-
-
-    /* ========== Form Handlers ========== */
-
-    function submitLostForm(event) {
-        event.preventDefault();
-        // Get lost item data...
-        const lostItem = {
-            name: document.getElementById('lostItemName').value,
-            location: document.getElementById('lostLocation').value,
-            // ... other fields
-            // For full demo, we would add lost location lat/lon here as well
-            lat: lostGPS.lat, 
-            lon: lostGPS.lon
-        };
-        console.log("Lost Item Reported:", lostItem);
-        alert(`Lost Item Reported: ${lostItem.name}. We'll notify you if a match is found!`);
-        closeModalById('lostModal');
-        document.getElementById('lostForm').reset();
-    }
-
-    function submitFoundForm(event) {
-        event.preventDefault();
-
-        // Ensure GPS is captured (though not strictly required for form submission)
-        if (!foundGPS.lat || !foundGPS.lon) {
-            alert("Please capture your current GPS location for accurate reporting.");
-            return;
-        }
-
-        const foundItem = {
-            name: document.getElementById('foundItemName').value,
-            location: document.getElementById('foundLocation').value,
-            lat: foundGPS.lat,
-            lon: foundGPS.lon,
-            // ... other fields
-        };
-        
-        console.log("Found Item Reported:", foundItem);
-        
-        // **DISTANCE METER IN ACTION (Simulated Matching)**
-        // Check distance to the simulated 'lost item' (lostGPS)
-        const distance = getDistance(
-            lostGPS.lat, lostGPS.lon, 
-            foundItem.lat, foundItem.lon
-        );
-
-        if (distance < 1) { // If less than 1km away, it's a potential match!
-            alert(`SUCCESS! Found Item Reported. It looks like this item was lost only ${distance.toFixed(2)} km away! A match notification will be sent.`);
-        } else {
-            alert(`Found Item Reported: ${foundItem.name}. No immediate matches found (Lost item is ${distance.toFixed(2)} km away).`);
-        }
-
-
-        closeModalById('foundModal');
-        document.getElementById('foundForm').reset();
-        // Reset GPS display/storage
-        foundGPS = { lat: null, lon: null };
-        document.getElementById('foundLatDisplay').textContent = 'N/A';
-        document.getElementById('foundLonDisplay').textContent = 'N/A';
-    }
-
-
     /* ========== Rating stars ========== */
     let currentRating = 0;
-    const starButtons = Array.from(document.querySelectorAll('.star-btn'));
+    // query later after DOM ready
+    function initStars(){
+      const starButtons = Array.from(document.querySelectorAll('.star-btn'));
+      window._starButtons = starButtons;
+      starButtons.forEach((btn, idx) => {
+        btn.addEventListener('mouseenter', () => {
+          starButtons.forEach((b, i) => {
+            b.style.opacity = (i <= idx ? '1' : '0.5');
+          });
+        });
+        btn.addEventListener('mouseleave', () => {
+          updateStars();
+        });
+      });
+    }
     function setRating(r) {
       r = Number(r);
       if (currentRating === r) currentRating = 0; else currentRating = r;
       updateStars();
+      const hidden = document.getElementById('reviewRating');
+      if(hidden) hidden.value = currentRating;
     }
     function updateStars() {
+      const starButtons = window._starButtons || [];
       starButtons.forEach((btn, i) => {
-        const value = i + 1;
-        if (value <= currentRating) {
-          btn.classList.add('star-active'); btn.classList.remove('star-inactive'); btn.setAttribute('aria-checked','true');
-        } else {
-          btn.classList.remove('star-active'); btn.classList.add('star-inactive'); btn.setAttribute('aria-checked','false');
-        }
+        btn.style.opacity = (i < currentRating ? '1' : '0.5');
+        btn.setAttribute('aria-checked', (i < currentRating).toString());
       });
     }
-    starButtons.forEach((btn, idx) => {
-      btn.addEventListener('mouseenter', () => {
-        starButtons.forEach((b, i) => {
-          if (i <= idx) { b.classList.add('star-active'); b.classList.remove('star-inactive'); }
-          else { b.classList.remove('star-active'); b.classList.add('star-inactive'); }
-        });
-      });
-    });
-    // The rest of the original script follows (swipe logic, review submission, etc.)
-    // ... [Remaining original code (swipe logic, review submission, etc.) is preserved] ...
 
-    /* ========== Image Preview ========== */
-    function handleImagePreview(input, previewId) {
+    /* ========== Image preview helper (already used) ========== */
+    function handleImagePreview(inputEl, previewId){
+      const file = inputEl.files && inputEl.files[0];
       const preview = document.getElementById(previewId);
-      if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          preview.src = e.target.result;
-          preview.style.display = 'block';
+      if (!file || !preview) return;
+      const url = URL.createObjectURL(file);
+      preview.src = url;
+      preview.style.display = 'block';
+      preview.onload = () => { URL.revokeObjectURL(url); };
+    }
+
+    // small helper to open hidden file input (camera-capable on mobile)
+    function triggerFile(fileInputId){
+      const fi = document.getElementById(fileInputId);
+      if(!fi) return;
+      fi.click();
+    }
+
+    /* ========== GEOLOCATION helpers ========== */
+    function getLocation(latId, lngId, displayId){
+      const display = document.getElementById(displayId);
+      if(!navigator.geolocation){
+        if(display) display.textContent = 'Geolocation not supported by your browser';
+        return;
+      }
+      // show loading
+      if(display) display.textContent = 'Getting location…';
+      navigator.geolocation.getCurrentPosition(function(pos){
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        const latEl = document.getElementById(latId);
+        const lngEl = document.getElementById(lngId);
+        if(latEl) latEl.value = lat;
+        if(lngEl) lngEl.value = lng;
+        if(display) display.innerHTML = `📍 ${lat.toFixed(6)}, ${lng.toFixed(6)} — <a href="https://maps.google.com?q=${lat},${lng}" target="_blank" rel="noopener" style="color:#05647a; text-decoration:underline">View on map</a>`;
+      }, function(err){
+        if(display) {
+          if(err.code === 1) display.textContent = 'Location access denied';
+          else display.textContent = 'Unable to fetch location';
         }
-        reader.readAsDataURL(input.files[0]);
-      } else {
-        preview.style.display = 'none';
-        preview.src = '#';
+      }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+    }
+
+    function clearLocation(latId, lngId, displayId){
+      const latEl = document.getElementById(latId);
+      const lngEl = document.getElementById(lngId);
+      const display = document.getElementById(displayId);
+      if(latEl) latEl.value = '';
+      if(lngEl) lngEl.value = '';
+      if(display) display.textContent = '';
+    }
+
+    /* ========== Lost / Found small forms ========== */
+    function submitLostForm(e){
+      e.preventDefault();
+      // gather data including geotag and image presence
+      const name = document.getElementById('lostItemName')?.value || '';
+      const where = document.getElementById('lostLocation')?.value || '';
+      const desc = document.getElementById('lostDescription')?.value || '';
+      const contact = document.getElementById('lostContact')?.value || '';
+      const lat = document.getElementById('lostLat')?.value || '';
+      const lng = document.getElementById('lostLng')?.value || '';
+      const imageInput = document.getElementById('lostImageInput');
+      const hasImage = imageInput && imageInput.files && imageInput.files.length > 0;
+
+      // For now we just alert — replace this with your backend upload code
+      let msg = 'Thanks — lost item reported';
+      msg += '\n\n' + `Item: ${name}\nWhere: ${where}\nContact: ${contact}\nHas image: ${hasImage ? 'Yes' : 'No'}`;
+      if(lat && lng) msg += `\nLocation: ${lat}, ${lng}`;
+      alert(msg);
+
+      closeModalById('lostModal');
+
+      // reset form & preview
+      const form = document.getElementById('lostForm');
+      if(form) form.reset();
+      const p = document.getElementById('lostImagePreview'); if(p) p.style.display='none';
+      clearLocation('lostLat','lostLng','lostLocDisplay');
+    }
+
+    function submitFoundForm(e){
+      e.preventDefault();
+      const name = document.getElementById('foundItemName')?.value || '';
+      const where = document.getElementById('foundLocation')?.value || '';
+      const desc = document.getElementById('foundDescription')?.value || '';
+      const contact = document.getElementById('foundContact')?.value || '';
+      const lat = document.getElementById('foundLat')?.value || '';
+      const lng = document.getElementById('foundLng')?.value || '';
+      const imageInput = document.getElementById('foundImageInput');
+      const hasImage = imageInput && imageInput.files && imageInput.files.length > 0;
+
+      let msg = 'Thanks — found item reported';
+      msg += '\n\n' + `Item: ${name}\nWhere: ${where}\nContact: ${contact}\nHas image: ${hasImage ? 'Yes' : 'No'}`;
+      if(lat && lng) msg += `\nLocation: ${lat}, ${lng}`;
+      alert(msg);
+
+      closeModalById('foundModal');
+
+      const form = document.getElementById('foundForm');
+      if(form) form.reset();
+      const p = document.getElementById('foundImagePreview'); if(p) p.style.display='none';
+      clearLocation('foundLat','foundLng','foundLocDisplay');
+    }
+
+    /* ========== SOUND (WebAudio) ========== */
+    const audioCtx = (typeof AudioContext !== 'undefined') ? new AudioContext() : null;
+    function playTone(freq, duration=0.12, type='sine', gain=0.08){
+      if (!audioCtx) return;
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = type; o.frequency.value = freq;
+      g.gain.value = gain;
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start();
+      setTimeout(()=> { o.stop(); }, duration*1000);
+    }
+    function playSound(name){
+      try {
+        if (name === 'swipe') { playTone(220, 0.08, 'sine', 0.06); }
+        if (name === 'reject') { playTone(160, 0.08, 'sine', 0.05); }
+        if (name === 'match') { playTone(540, 0.12, 'triangle', 0.12); setTimeout(()=>playTone(760,0.10,'sine',0.09),80); }
+        if (name === 'send') { playTone(720, 0.06,'square',0.06); }
+      } catch(e){}
+    }
+
+    /* ========== SWIPE DECK (stacked 3 visible) ========== */
+    let matchedItems = []; // array of items from backend
+    let currentIndex = 0;
+    let swipeHistory = [];
+    let matchedItem = null;
+
+    const deckContainer = document.getElementById('deckContainer');
+    const undoBtn = document.getElementById('undoBtn');
+    const noItemsPlaceholder = document.getElementById('noItemsPlaceholder');
+
+    function clearDeck(){
+      if(!deckContainer) return;
+      deckContainer.querySelectorAll('.card').forEach(n=>n.remove());
+    }
+
+    // create a card element from item
+    function createCardElement(item, idxFromTop){
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.setAttribute('data-index', item.id || idxFromTop);
+      if(idxFromTop===1) card.classList.add('deck-back-1');
+      if(idxFromTop===2) card.classList.add('deck-back-2');
+
+      const imgUrl = item.image || '';
+      const imageDiv = document.createElement('div');
+      imageDiv.className = 'image';
+      imageDiv.style.backgroundImage = imgUrl ? `url('${escapeHtml(imgUrl)}')` : `linear-gradient(180deg,#f0f7fb,#eaf8ff)`;
+
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.innerHTML = `
+        <h4>${escapeHtml(item.name || 'Item')}</h4>
+        <p class="text-sm text-slate-600">${escapeHtml(item.description || '')}</p>
+        <div style="margin-top:auto; display:flex; gap:8px; align-items:center;">
+          <div class="text-xs text-slate-500">📍 ${escapeHtml(item.location || 'Location')}</div>
+          <div style="margin-left:auto; font-size:13px; color:#0b3b35; font-weight:700;">${escapeHtml(item.finderName || 'Finder')}</div>
+        </div>
+      `;
+
+      card.appendChild(imageDiv);
+      card.appendChild(meta);
+
+      // attach pointer handlers for drag
+      enableDragOnCard(card, item);
+
+      return card;
+    }
+
+    function renderDeck(){
+      if(!deckContainer) return;
+      clearDeck();
+      if (!matchedItems || matchedItems.length===0){
+        if(noItemsPlaceholder) noItemsPlaceholder.style.display = 'block';
+        if(undoBtn) undoBtn.disabled = swipeHistory.length === 0;
+        return;
+      }
+      if(noItemsPlaceholder) noItemsPlaceholder.style.display = 'none';
+
+      const visible = matchedItems.slice(currentIndex, currentIndex+3);
+      visible.reverse().forEach((it, revIdx) => {
+        const idxFromTop = revIdx;
+        const cardEl = createCardElement(it, idxFromTop);
+        cardEl.style.zIndex = 50 + (3 - revIdx);
+        deckContainer.appendChild(cardEl);
+      });
+
+      if(undoBtn) undoBtn.disabled = swipeHistory.length === 0;
+    }
+
+    // helper: escape HTML for safety
+    function escapeHtml(unsafe = '') {
+      return String(unsafe).replace(/[&<"'>]/g, (m)=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' })[m]);
+    }
+
+    // drag logic (supports mouse and touch)
+    function enableDragOnCard(card, item){
+      let startX=0, startY=0, currentX=0, currentY=0, isDragging=false;
+      const threshold = 110; // px to consider accept/reject
+      card.addEventListener('pointerdown', startDrag);
+      card.addEventListener('pointerup', endDrag);
+      card.addEventListener('pointermove', onMove);
+      card.addEventListener('pointercancel', endDrag);
+      card.addEventListener('touchstart', (e)=>{}, {passive:false});
+
+      function startDrag(e){
+        isDragging = true;
+        startX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+        startY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+        card.classList.add('dragging');
+        if (card.setPointerCapture) try{ card.setPointerCapture(e.pointerId); }catch(e){}
+      }
+      function onMove(e){
+        if (!isDragging) return;
+        currentX = (e.clientX || (e.touches && e.touches[0].clientX) || 0) - startX;
+        currentY = (e.clientY || (e.touches && e.touches[0].clientY) || 0) - startY;
+        const rotation = currentX / 12;
+        card.style.transform = `translate(${currentX}px, ${currentY}px) rotate(${rotation}deg)`;
+        card.style.opacity = 0.98;
+      }
+      function endDrag(e){
+        if (!isDragging) return;
+        isDragging = false;
+        card.classList.remove('dragging');
+
+        const movedX = currentX;
+        if (movedX > threshold){
+          card.style.transition = 'transform .36s cubic-bezier(.2,.9,.3,1), opacity .24s';
+          card.style.transform = `translate(${window.innerWidth}px, ${currentY}px) rotate(18deg)`;
+          card.style.opacity = 0;
+          playSound('match');
+          swipeHistory.push({ index: currentIndex, action: 'accept', item });
+          matchedItem = item;
+          currentIndex++;
+          setTimeout(()=> {
+            renderDeck();
+            showMatchFlow(item);
+          }, 260);
+          return;
+        }
+        if (movedX < -threshold){
+          card.style.transition = 'transform .36s cubic-bezier(.2,.9,.3,1), opacity .24s';
+          card.style.transform = `translate(-${window.innerWidth}px, ${currentY}px) rotate(-18deg)`;
+          card.style.opacity = 0;
+          playSound('reject');
+          swipeHistory.push({ index: currentIndex, action: 'reject', item });
+          currentIndex++;
+          setTimeout(()=> { renderDeck(); }, 260);
+          return;
+        }
+
+        card.style.transition = 'transform .28s cubic-bezier(.2,.9,.3,1)';
+        card.style.transform = '';
+        card.style.opacity = 1;
+        currentX=currentY=0;
       }
     }
 
-    /* ... Remaining original JavaScript functions (swipe deck, chat, coupon, etc.) ... */
-
-    function submitReview(event) {
-        event.preventDefault();
-        alert('Thank you for your review!');
-        document.getElementById('reviewForm').reset();
-        currentRating = 0;
-        updateStars();
+    // manual accept/reject using buttons (for accessibility)
+    function manualAccept(){
+      if (!matchedItems || currentIndex >= matchedItems.length) return;
+      const item = matchedItems[currentIndex];
+      const top = deckContainer.querySelector('.card');
+      if (top){
+        top.style.transition = 'transform .36s cubic-bezier(.2,.9,.3,1), opacity .24s';
+        top.style.transform = `translate(${window.innerWidth}px, 0) rotate(18deg)`;
+        top.style.opacity = 0;
+      }
+      playSound('match');
+      swipeHistory.push({ index: currentIndex, action: 'accept', item });
+      matchedItem = item;
+      currentIndex++;
+      setTimeout(()=>{ renderDeck(); showMatchFlow(item); }, 260);
     }
-    
-    // Placeholder for swipe deck logic (removed for brevity but preserved in original code)
-    function manualReject() { console.log("Rejected"); }
-    function manualAccept() { console.log("Accepted"); openModalById('matchModal'); }
-    function undoSwipe() { console.log("Undo"); }
-
-    function openMatchChat() { closeModalById('matchModal'); openModalById('matchChat'); }
-    function closeMatchChat() { closeModalById('matchChat'); }
-    function sendMatchChat() { 
-        const input = document.getElementById('matchChatInput');
-        if (input.value.trim() !== '') {
-            const messages = document.getElementById('chatMessages');
-            const placeholder = document.getElementById('chatEmptyPlaceholder');
-            if(placeholder) placeholder.style.display = 'none';
-            const messageEl = document.createElement('div');
-            messageEl.className = 'flex justify-end mb-2';
-            messageEl.innerHTML = `<div class="bubble me">${input.value.trim()}</div>`;
-            messages.appendChild(messageEl);
-            messages.scrollTop = messages.scrollHeight;
-            input.value = '';
-        }
-    }
-    
-    function openCoupons() { closeModalById('matchChat'); openModalById('couponModal'); }
-    function closeCoupons() { closeModalById('couponModal'); }
-
-    function redeemCoupon(button) {
-        const code = button.getAttribute('data-code');
-        navigator.clipboard.writeText(code).then(() => {
-            const toast = document.getElementById('couponToast');
-            toast.textContent = `Coupon ${code} copied!`;
-            toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 2000);
-        }).catch(err => {
-            console.error('Failed to copy coupon: ', err);
-            alert(`Coupon Code: ${code} - Copy failed, see console.`);
-        });
+    function manualReject(){
+      if (!matchedItems || currentIndex >= matchedItems.length) return;
+      const item = matchedItems[currentIndex];
+      const top = deckContainer.querySelector('.card');
+      if (top){
+        top.style.transition = 'transform .36s cubic-bezier(.2,.9,.3,1), opacity .24s';
+        top.style.transform = `translate(-${window.innerWidth}px, 0) rotate(-18deg)`;
+        top.style.opacity = 0;
+      }
+      playSound('reject');
+      swipeHistory.push({ index: currentIndex, action: 'reject', item });
+      currentIndex++;
+      setTimeout(()=>{ renderDeck(); }, 260);
     }
 
+    function undoSwipe(){
+      if (!swipeHistory.length) return;
+      const last = swipeHistory.pop();
+      currentIndex = last.index;
+      renderDeck();
+      if(undoBtn) undoBtn.disabled = swipeHistory.length === 0;
+    }
+
+    function viewOnMap(lat,lng){
+      if (!lat && !lng) { alert('Location not available'); return; }
+      window.open(`https://maps.google.com?q=${lat},${lng}`, '_blank', 'noopener');
+    }
+
+    // loadMatchedItems - to be called by backend with array of matches
+    window.loadMatchedItems = function(items){
+      if (!Array.isArray(items)) return;
+      matchedItems = items.slice(); // copy
+      currentIndex = 0; swipeHistory = []; matchedItem = null;
+      renderDeck();
+    };
+
+    // developer helper: open match directly from external (optional)
+    window.openMatchFromExternal = function(itemObj){
+      matchedItem = itemObj;
+      document.getElementById('matchInfo').textContent = itemObj && itemObj.name ? `You matched with ${itemObj.finderName || 'Finder'} — ${itemObj.name}` : 'Matched';
+      openModalById('matchModal');
+    };
+
+    // show match flow
+    function showMatchFlow(item){
+      document.getElementById('matchInfo').textContent = item && item.name ? `You matched with ${item.finderName || 'Finder'} — ${item.name}` : 'You matched!';
+      openModalById('matchModal');
+      setTimeout(()=> {
+        closeModalById('matchModal');
+        openMatchChat();
+      }, 900);
+    }
+
+    /* ========== CHAT SYSTEM ========== */
+    function openMatchChat(){
+      closeModalById('matchModal');
+      const el = document.getElementById('matchChat');
+      el.classList.add('active');
+      el.setAttribute('aria-hidden','false');
+      document.getElementById('chatHeaderTitle').textContent = (matchedItem && matchedItem.finderName) ? matchedItem.finderName : 'Finder';
+      document.getElementById('chatHeaderSubtitle').textContent = (matchedItem && matchedItem.name) ? matchedItem.name : 'Matched item';
+      const messages = document.getElementById('chatMessages');
+      messages.innerHTML = '<div id="chatEmptyPlaceholder" class="text-center text-slate-500"><p>No messages yet. Start the conversation.</p></div>';
+    }
+    function closeMatchChat(){
+      const el = document.getElementById('matchChat');
+      el.classList.remove('active');
+      el.setAttribute('aria-hidden','true');
+    }
+
+    function sendMatchChat(){
+      const input = document.getElementById('matchChatInput');
+      const text = input.value.trim();
+      if (!text) return;
+      const messages = document.getElementById('chatMessages');
+      const el = document.createElement('div');
+      el.className = 'text-right mb-3';
+      el.innerHTML = `<div class="bubble me">${escapeHtml(text)}<div class="text-xs text-white/70 mt-1" style="font-weight:600">Sent</div></div>`;
+      const placeholder = document.getElementById('chatEmptyPlaceholder');
+      if (placeholder) placeholder.remove();
+      messages.appendChild(el);
+      messages.scrollTop = messages.scrollHeight;
+      input.value = '';
+      playSound('send');
+      // TODO: send message to backend here
+    }
+
+    /* ========== Coupon Modal + Redeem ========== */
+    function openCoupons(){ document.getElementById('couponModal').classList.add('active'); document.getElementById('couponModal').setAttribute('aria-hidden','false'); }
+    function closeCoupons(){ document.getElementById('couponModal').classList.remove('active'); document.getElementById('couponModal').setAttribute('aria-hidden','true'); }
+
+    function redeemCoupon(btn){
+      const code = btn.getAttribute('data-code');
+      if (!code) return;
+      navigator.clipboard && navigator.clipboard.writeText(code).catch(()=>{});
+      btn.disabled = true;
+      btn.classList.add('active');
+      btn.textContent = 'Copied ✓';
+      const toast = document.getElementById('couponToast');
+      toast.textContent = `Coupon ${code} copied to clipboard`;
+      toast.classList.add('show');
+      setTimeout(()=>{ toast.classList.remove('show'); }, 2000);
+    }
+
+    /* ========== Misc initialisation ========== */
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!localStorage.getItem('hasSeenTutorial')) {
+        openModalById('updatesModal');
+        localStorage.setItem('hasSeenTutorial','true');
+      }
+      initStars();
+      updateStars();
+      // Attach preview handler for file inputs if user selects camera image via OS camera UI
+      const lostFile = document.getElementById('lostImageInput');
+      if(lostFile) lostFile.addEventListener('change', (e)=> handleImagePreview(lostFile, 'lostImagePreview'));
+      const foundFile = document.getElementById('foundImageInput');
+      if(foundFile) foundFile.addEventListener('change', (e)=> handleImagePreview(foundFile, 'foundImagePreview'));
+    });
+
+    // Initialize star visuals (if script loaded after DOM)
+    function updateStars(){ /* wrapper used above */ const s = window._starButtons || []; s.forEach((b,i)=> b.style.opacity = (i < currentRating ? '1' : '0.5')); }
   </script>
 </body>
 </html>
+
