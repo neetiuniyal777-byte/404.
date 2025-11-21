@@ -83,12 +83,6 @@
     /* upload preview */
     .img-preview { max-width:100%; height:96px; object-fit:cover; border-radius:10px; display:block; margin-top:8px; }
 
-    /* small camera button */
-    .cam-btn { display:inline-flex; gap:8px; align-items:center; padding:8px 12px; border-radius:12px; background:#06b6d4; color:white; cursor:pointer; border:none; }
-
-    /* small location button */
-    .loc-btn { display:inline-flex; gap:8px; align-items:center; padding:8px 12px; border-radius:12px; background:#0ea5a9; color:white; cursor:pointer; border:none; }
-
     /* Swipe deck styles */
     .deck { position:relative; width:100%; max-width:520px; height:420px; margin:0 auto; }
     .card {
@@ -127,9 +121,13 @@
     .btn-accept { background:#06b6d4; color:white; border:none; }
 
     /* modal base */
-    .modal { display:none; position:fixed; inset:0; align-items:center; justify-content:center; z-index:90; }
+    .modal { display:none; position:fixed; inset:0; align-items:center; justify-content:center; z-index:90; padding:16px; }
     .modal.active { display:flex; }
     .modal-backdrop { position:absolute; inset:0; background:rgba(2,6,23,0.45); backdrop-filter: blur(2px); }
+
+    /* allow modal content scroll and close button */
+    .modal .modal-content { position:relative; z-index:2; width:100%; max-height:90vh; overflow:auto; }
+    .modal .modal-close { position:absolute; right:12px; top:12px; background:transparent; border:none; font-size:22px; cursor:pointer; color:#475569; }
 
     /* match toast */
     .toast { position:fixed; right:20px; bottom:20px; background:#0ea5a9; color:white; padding:10px 14px; border-radius:10px; box-shadow:0 8px 28px rgba(2,6,23,0.12); transform:translateY(10px); opacity:0; transition:opacity .25s, transform .25s; z-index:9999; }
@@ -160,6 +158,14 @@
     *:focus{ outline: 3px solid rgba(6,182,212,0.14); outline-offset:2px; }
 
     @media (min-width:1024px){ .min-w-72{ min-width:340px } }
+
+    /* small helpers for camera / geotag UI */
+    .meta-row { display:flex; gap:8px; align-items:center; }
+    .geo-badge { font-size:13px; color:#0b3b35; font-weight:700; background:#f1fdfa; padding:6px 8px; border-radius:8px; border:1px solid rgba(6,182,212,0.08); }
+    .small-muted { font-size:13px; color:var(--muted); }
+    .video-preview { width:100%; max-height:280px; border-radius:12px; background:#000; display:block; }
+    .camera-controls { display:flex; gap:8px; margin-top:8px; }
+    .hidden { display:none !important; }
   </style>
 </head>
 <body class="overflow-x-hidden">
@@ -320,7 +326,8 @@
   <!-- Swipe drawer modal -->
   <div id="swipeModal" class="modal" aria-hidden="true">
     <div class="modal-backdrop" onclick="closeSwipe()" aria-hidden="true"></div>
-    <div class="ghibli-card p-6 rounded-2xl max-w-3xl mx-4" style="z-index:95; position:relative;">
+    <div class="modal-content ghibli-card p-6 rounded-2xl max-w-3xl mx-4" style="z-index:95; position:relative;">
+      <button class="modal-close" onclick="closeSwipe()" aria-label="Close">✕</button>
       <div class="flex justify-between items-center mb-3">
         <h3 class="text-lg font-bold">Matched Results</h3>
         <div class="flex items-center gap-3">
@@ -349,7 +356,8 @@
   <!-- Match Modal (shown after accept) -->
   <div id="matchModal" class="modal" aria-hidden="true" role="dialog" aria-label="Match">
     <div class="modal-backdrop"></div>
-    <div class="ghibli-card p-6 rounded-2xl max-w-lg mx-4 text-center" style="z-index:96;">
+    <div class="modal-content ghibli-card p-6 rounded-2xl max-w-lg mx-4 text-center" style="z-index:96;">
+      <button class="modal-close" onclick="closeModalById('matchModal')" aria-label="Close">✕</button>
       <h2 id="matchTitle" class="text-xl font-bold mb-2">It's a Match! 🎉</h2>
       <p id="matchInfo" class="text-slate-600 mb-4">You have matched with the finder.</p>
       <div class="flex gap-3 justify-center">
@@ -362,7 +370,8 @@
   <!-- Chat Modal (bottom sheet like your screenshot) -->
   <div id="matchChat" class="modal chat-modal" aria-hidden="true" style="align-items:flex-end; padding:0;">
     <div class="modal-backdrop" onclick="closeMatchChat()"></div>
-    <div class="chat-modal box" style="z-index:97; position:relative;">
+    <div class="modal-content chat-modal box" style="z-index:97; position:relative;">
+      <button class="modal-close" onclick="closeMatchChat()" aria-label="Close">✕</button>
       <div class="chat-header">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">👤</div>
@@ -395,8 +404,8 @@
   <!-- Coupon Modal (center float, light blue tint) -->
   <div id="couponModal" class="modal" aria-hidden="true" role="dialog" aria-label="Coupons">
     <div class="modal-backdrop" onclick="closeCoupons()"></div>
-    <div class="coupon-modal box" style="z-index:98;">
-      <button onclick="closeCoupons()" class="absolute top-4 right-6 text-gray-600 text-2xl font-bold hover:text-gray-800">&times;</button>
+    <div class="modal-content coupon-modal box" style="z-index:98;">
+      <button class="modal-close" onclick="closeCoupons()" aria-label="Close">✕</button>
       <h2 class="text-3xl font-extrabold text-slate-800 mb-6 text-center">Available Discounts</h2>
       <div class="coupon-grid">
         <!-- 40% -->
@@ -458,7 +467,8 @@
   <!-- Misc Modals: Updates / FAQ / Lost / Found -->
   <div id="updatesModal" class="modal" aria-hidden="true">
     <div class="modal-backdrop" onclick="closeModalById('updatesModal')"></div>
-    <div class="ghibli-card p-6 rounded-2xl max-w-2xl mx-4" style="z-index:92;">
+    <div class="modal-content ghibli-card p-6 rounded-2xl max-w-2xl mx-4" style="z-index:92;">
+      <button class="modal-close" onclick="closeModalById('updatesModal')" aria-label="Close">✕</button>
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-xl font-bold text-slate-800">Recent Updates</h3>
         <button onclick="closeModalById('updatesModal')" class="text-slate-500 text-xl">✕</button>
@@ -469,15 +479,15 @@
 
   <div id="faqModal" class="modal" aria-hidden="true">
     <div class="modal-backdrop" onclick="closeModalById('faqModal')"></div>
-    <div class="ghibli-card p-6 rounded-2xl max-w-2xl mx-4" style="z-index:92;">
+    <div class="modal-content ghibli-card p-6 rounded-2xl max-w-2xl mx-4" style="z-index:92;">
+      <button class="modal-close" onclick="closeModalById('faqModal')" aria-label="Close">✕</button>
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-xl font-bold text-slate-800">Frequently Asked Questions</h3>
-        <button onclick="closeModalById('faqModal')" class="text-slate-500 text-xl">✕</button>
       </div>
       <div class="space-y-3 text-slate-600">
         <div><strong>How do I report a lost item?</strong><p>Click "I Lost Something" and fill the form.</p></div>
-        <div><strong>Is this service free?</strong><p>Yes — 404 Found is free to use.</p></div>
-        <div><strong>How do I contact someone who found my item?</strong><p>You'll get secure contact options when matched.</p></div>
+        <div><strong>Is it free?</strong><p>Yes — 404 Found is free to use.</p></div>
+        <div><strong>What items can I report?</strong><p>Anything of value — electronics, IDs, accessories, bags, etc.</p></div>
       </div>
     </div>
   </div>
@@ -485,10 +495,10 @@
   <!-- Lost Modal -->
   <div id="lostModal" class="modal" aria-hidden="true">
     <div class="modal-backdrop" onclick="closeModalById('lostModal')"></div>
-    <div class="ghibli-card p-6 rounded-2xl max-w-md mx-4" style="z-index:92;">
+    <div class="modal-content ghibli-card p-6 rounded-2xl max-w-md mx-4" style="z-index:92;">
+      <button class="modal-close" onclick="closeModalById('lostModal')" aria-label="Close">✕</button>
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-xl font-bold text-red-600">Report Lost Item</h3>
-        <button onclick="closeModalById('lostModal')" class="text-slate-500 text-xl">✕</button>
       </div>
       <form id="lostForm" onsubmit="submitLostForm(event)" class="space-y-3">
         <div>
@@ -511,23 +521,8 @@
         <!-- Simple Choose Image upload (Lost) -->
         <div>
           <label class="block text-sm font-semibold mb-1">Add an image (optional)</label>
-          <div class="flex items-center gap-3">
-            <input id="lostImageInput" type="file" accept="image/*" capture="environment" class="block w-full" onchange="handleImagePreview(this, 'lostImagePreview')" />
-            <button type="button" class="cam-btn" onclick="triggerFile('lostImageInput')">Use Camera</button>
-          </div>
+          <input id="lostImageInput" type="file" accept="image/*" class="block w-full" onchange="handleImagePreview(this, 'lostImagePreview')" />
           <img id="lostImagePreview" class="img-preview" style="display:none;" alt="Lost item preview">
-        </div>
-
-        <!-- Geotag for Lost -->
-        <div>
-          <label class="block text-sm font-semibold mb-1">Add geotag (optional)</label>
-          <div class="flex items-center gap-3">
-            <button type="button" class="loc-btn" onclick="getLocation('lostLat','lostLng','lostLocDisplay')">Add Current Location</button>
-            <button type="button" class="btn-mini" onclick="clearLocation('lostLat','lostLng','lostLocDisplay')">Clear</button>
-          </div>
-          <input type="hidden" id="lostLat">
-          <input type="hidden" id="lostLng">
-          <div id="lostLocDisplay" class="text-slate-600 text-sm mt-2"></div>
         </div>
 
         <button type="submit" class="w-full bg-red-500 text-white py-2 rounded font-semibold">Report Lost Item</button>
@@ -535,53 +530,77 @@
     </div>
   </div>
 
-  <!-- Found Modal -->
+  <!-- Found Modal (UPDATED: geotag + camera + scrolling + close) -->
   <div id="foundModal" class="modal" aria-hidden="true">
     <div class="modal-backdrop" onclick="closeModalById('foundModal')"></div>
-    <div class="ghibli-card p-6 rounded-2xl max-w-md mx-4" style="z-index:92;">
+    <div class="modal-content ghibli-card p-6 rounded-2xl max-w-md mx-4" style="z-index:92;">
+      <button class="modal-close" onclick="closeModalById('foundModal')" aria-label="Close">✕</button>
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-xl font-bold text-emerald-700">Report Found Item</h3>
-        <button onclick="closeModalById('foundModal')" class="text-slate-500 text-xl">✕</button>
       </div>
+
       <form id="foundForm" onsubmit="submitFoundForm(event)" class="space-y-3">
         <div>
           <label class="block text-sm font-semibold mb-1">Item Name</label>
           <input id="foundItemName" type="text" required class="w-full p-2 border rounded" placeholder="e.g., Red wallet">
         </div>
+
         <div>
           <label class="block text-sm font-semibold mb-1">Where did you find it?</label>
-          <input id="foundLocation" type="text" required class="w-full p-2 border rounded" placeholder="e.g., Airport">
+          <!-- This input will be auto-filled from geotag; user can edit -->
+          <input id="foundLocation" type="text" required class="w-full p-2 border rounded" placeholder="Fetching location..." >
+          <div class="flex items-center justify-between mt-2">
+            <div class="meta-row">
+              <div id="foundCoords" class="geo-badge small-muted">Lat · Lon</div>
+              <div id="foundAccuracy" class="small-muted ml-2">accuracy</div>
+            </div>
+            <div>
+              <button type="button" class="btn-mini" onclick="refreshFoundLocation()" title="Refetch location">Refresh</button>
+              <button type="button" class="btn-mini" onclick="viewOnMapFromFound()" title="Open in maps">View</button>
+            </div>
+          </div>
+          <div id="foundGeoMessage" class="small-muted mt-2">Attempting to get precise location…</div>
         </div>
+
         <div>
           <label class="block text-sm font-semibold mb-1">Description</label>
           <textarea id="foundDescription" required class="w-full p-2 border rounded h-24" placeholder="Describe the item..."></textarea>
         </div>
+
         <div>
           <label class="block text-sm font-semibold mb-1">Your Contact</label>
           <input id="foundContact" type="email" required class="w-full p-2 border rounded" placeholder="your.email@example.com">
         </div>
 
-        <!-- Simple Choose Image upload (Found) -->
+        <!-- Camera + Upload UI -->
         <div>
           <label class="block text-sm font-semibold mb-1">Add an image (optional)</label>
-          <div class="flex items-center gap-3">
-            <input id="foundImageInput" type="file" accept="image/*" capture="environment" class="block w-full" onchange="handleImagePreview(this, 'foundImagePreview')" />
-            <button type="button" class="cam-btn" onclick="triggerFile('foundImageInput')">Use Camera</button>
+
+          <!-- live camera preview -->
+          <div id="cameraArea" class="space-y-2">
+            <video id="cameraStream" class="video-preview hidden" autoplay playsinline></video>
+            <canvas id="captureCanvas" class="hidden"></canvas>
+
+            <div class="camera-controls">
+              <button id="startCameraBtn" type="button" class="btn-mini" onclick="startCamera()">Open Camera</button>
+              <button id="takePhotoBtn" type="button" class="btn-mini hidden" onclick="takePhoto()">Capture</button>
+              <button id="usePhotoBtn" type="button" class="btn-mini hidden" onclick="useCapturedPhoto()">Use Photo</button>
+              <button id="stopCameraBtn" type="button" class="btn-mini hidden" onclick="stopCamera()">Close Camera</button>
+
+              <!-- fallback file input remains available -->
+              <label class="btn-mini" style="display:inline-flex;align-items:center;cursor:pointer;">
+                <input id="foundImageInput" type="file" accept="image/*" class="hidden" onchange="handleImagePreview(this, 'foundImagePreview')" />
+                Upload
+              </label>
+            </div>
+            <img id="foundImagePreview" class="img-preview" style="display:none;" alt="Found item preview">
+            <div id="cameraHint" class="small-muted">Tip: Use the camera for a quick photo. If permission denied, upload from gallery.</div>
           </div>
-          <img id="foundImagePreview" class="img-preview" style="display:none;" alt="Found item preview">
         </div>
 
-        <!-- Geotag for Found -->
-        <div>
-          <label class="block text-sm font-semibold mb-1">Add geotag (optional)</label>
-          <div class="flex items-center gap-3">
-            <button type="button" class="loc-btn" onclick="getLocation('foundLat','foundLng','foundLocDisplay')">Add Current Location</button>
-            <button type="button" class="btn-mini" onclick="clearLocation('foundLat','foundLng','foundLocDisplay')">Clear</button>
-          </div>
-          <input type="hidden" id="foundLat">
-          <input type="hidden" id="foundLng">
-          <div id="foundLocDisplay" class="text-slate-600 text-sm mt-2"></div>
-        </div>
+        <!-- Hidden fields to store lat/lon -->
+        <input type="hidden" id="foundLat" name="foundLat">
+        <input type="hidden" id="foundLng" name="foundLng">
 
         <button type="submit" class="w-full bg-emerald-500 text-white py-2 rounded font-semibold">Report Found Item</button>
       </form>
@@ -599,12 +618,22 @@
       if(!el) return;
       el.classList.add('active');
       el.setAttribute('aria-hidden','false');
+
+      // special case: when opening Found modal, auto-start geotag fetch
+      if (id === 'foundModal') {
+        setTimeout(() => { // slight delay so modal layout settles
+          fetchFoundLocation();
+        }, 120);
+      }
     }
     function closeModalById(id){
       const el = document.getElementById(id);
       if(!el) return;
       el.classList.remove('active');
       el.setAttribute('aria-hidden','true');
+
+      // stop camera if open
+      if (id === 'foundModal') stopCamera();
     }
 
     // simple wrappers for specific modals
@@ -613,37 +642,42 @@
 
     /* ========== Rating stars ========== */
     let currentRating = 0;
-    // query later after DOM ready
-    function initStars(){
-      const starButtons = Array.from(document.querySelectorAll('.star-btn'));
-      window._starButtons = starButtons;
-      starButtons.forEach((btn, idx) => {
-        btn.addEventListener('mouseenter', () => {
-          starButtons.forEach((b, i) => {
-            b.style.opacity = (i <= idx ? '1' : '0.5');
-          });
-        });
-        btn.addEventListener('mouseleave', () => {
-          updateStars();
-        });
-      });
-    }
+    const starButtons = Array.from(document.querySelectorAll('.star-btn'));
     function setRating(r) {
       r = Number(r);
       if (currentRating === r) currentRating = 0; else currentRating = r;
       updateStars();
-      const hidden = document.getElementById('reviewRating');
-      if(hidden) hidden.value = currentRating;
     }
     function updateStars() {
-      const starButtons = window._starButtons || [];
       starButtons.forEach((btn, i) => {
-        btn.style.opacity = (i < currentRating ? '1' : '0.5');
-        btn.setAttribute('aria-checked', (i < currentRating).toString());
+        const value = i + 1;
+        if (value <= currentRating) {
+          btn.classList.add('star-active'); btn.classList.remove('star-inactive'); btn.setAttribute('aria-checked','true');
+        } else {
+          btn.classList.remove('star-active'); btn.classList.add('star-inactive'); btn.setAttribute('aria-checked','false');
+        }
       });
     }
+    starButtons.forEach((btn, idx) => {
+      btn.addEventListener('mouseenter', () => {
+        starButtons.forEach((b, i) => {
+          if (i <= idx) { b.classList.add('star-active'); b.classList.remove('star-inactive'); }
+          else { b.classList.remove('star-active'); b.classList.add('star-inactive'); }
+        });
+      });
+      btn.addEventListener('mouseleave', () => updateStars());
+    });
 
-    /* ========== Image preview helper (already used) ========== */
+    function submitReview(e) {
+      e.preventDefault();
+      const name = document.getElementById('reviewName').value.trim();
+      if (!currentRating) { alert('Please select a rating'); return; }
+      alert(`Thanks ${name || 'there'} — your ${currentRating}/5 review was submitted.`);
+      document.getElementById('reviewForm').reset();
+      currentRating = 0; updateStars();
+    }
+
+    /* ========== Image preview helper ========== */
     function handleImagePreview(inputEl, previewId){
       const file = inputEl.files && inputEl.files[0];
       const preview = document.getElementById(previewId);
@@ -654,97 +688,32 @@
       preview.onload = () => { URL.revokeObjectURL(url); };
     }
 
-    // small helper to open hidden file input (camera-capable on mobile)
-    function triggerFile(fileInputId){
-      const fi = document.getElementById(fileInputId);
-      if(!fi) return;
-      fi.click();
-    }
-
-    /* ========== GEOLOCATION helpers ========== */
-    function getLocation(latId, lngId, displayId){
-      const display = document.getElementById(displayId);
-      if(!navigator.geolocation){
-        if(display) display.textContent = 'Geolocation not supported by your browser';
-        return;
-      }
-      // show loading
-      if(display) display.textContent = 'Getting location…';
-      navigator.geolocation.getCurrentPosition(function(pos){
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-        const latEl = document.getElementById(latId);
-        const lngEl = document.getElementById(lngId);
-        if(latEl) latEl.value = lat;
-        if(lngEl) lngEl.value = lng;
-        if(display) display.innerHTML = `📍 ${lat.toFixed(6)}, ${lng.toFixed(6)} — <a href="https://maps.google.com?q=${lat},${lng}" target="_blank" rel="noopener" style="color:#05647a; text-decoration:underline">View on map</a>`;
-      }, function(err){
-        if(display) {
-          if(err.code === 1) display.textContent = 'Location access denied';
-          else display.textContent = 'Unable to fetch location';
-        }
-      }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
-    }
-
-    function clearLocation(latId, lngId, displayId){
-      const latEl = document.getElementById(latId);
-      const lngEl = document.getElementById(lngId);
-      const display = document.getElementById(displayId);
-      if(latEl) latEl.value = '';
-      if(lngEl) lngEl.value = '';
-      if(display) display.textContent = '';
-    }
-
     /* ========== Lost / Found small forms ========== */
     function submitLostForm(e){
       e.preventDefault();
-      // gather data including geotag and image presence
-      const name = document.getElementById('lostItemName')?.value || '';
-      const where = document.getElementById('lostLocation')?.value || '';
-      const desc = document.getElementById('lostDescription')?.value || '';
-      const contact = document.getElementById('lostContact')?.value || '';
-      const lat = document.getElementById('lostLat')?.value || '';
-      const lng = document.getElementById('lostLng')?.value || '';
-      const imageInput = document.getElementById('lostImageInput');
-      const hasImage = imageInput && imageInput.files && imageInput.files.length > 0;
-
-      // For now we just alert — replace this with your backend upload code
-      let msg = 'Thanks — lost item reported';
-      msg += '\n\n' + `Item: ${name}\nWhere: ${where}\nContact: ${contact}\nHas image: ${hasImage ? 'Yes' : 'No'}`;
-      if(lat && lng) msg += `\nLocation: ${lat}, ${lng}`;
-      alert(msg);
-
+      alert('Thanks — lost item reported');
       closeModalById('lostModal');
-
-      // reset form & preview
-      const form = document.getElementById('lostForm');
-      if(form) form.reset();
+      document.getElementById('lostForm').reset();
       const p = document.getElementById('lostImagePreview'); if(p) p.style.display='none';
-      clearLocation('lostLat','lostLng','lostLocDisplay');
     }
 
     function submitFoundForm(e){
       e.preventDefault();
-      const name = document.getElementById('foundItemName')?.value || '';
-      const where = document.getElementById('foundLocation')?.value || '';
-      const desc = document.getElementById('foundDescription')?.value || '';
-      const contact = document.getElementById('foundContact')?.value || '';
-      const lat = document.getElementById('foundLat')?.value || '';
-      const lng = document.getElementById('foundLng')?.value || '';
-      const imageInput = document.getElementById('foundImageInput');
-      const hasImage = imageInput && imageInput.files && imageInput.files.length > 0;
-
-      let msg = 'Thanks — found item reported';
-      msg += '\n\n' + `Item: ${name}\nWhere: ${where}\nContact: ${contact}\nHas image: ${hasImage ? 'Yes' : 'No'}`;
-      if(lat && lng) msg += `\nLocation: ${lat}, ${lng}`;
-      alert(msg);
-
+      // You can read the image file and lat/lng values here and upload to backend
+      const data = {
+        item: document.getElementById('foundItemName').value,
+        description: document.getElementById('foundDescription').value,
+        contact: document.getElementById('foundContact').value,
+        locationText: document.getElementById('foundLocation').value,
+        lat: document.getElementById('foundLat').value,
+        lng: document.getElementById('foundLng').value
+      };
+      console.log('Found form data (front-end)', data);
+      alert('Thanks — found item reported');
       closeModalById('foundModal');
-
-      const form = document.getElementById('foundForm');
-      if(form) form.reset();
+      document.getElementById('foundForm').reset();
       const p = document.getElementById('foundImagePreview'); if(p) p.style.display='none';
-      clearLocation('foundLat','foundLng','foundLocDisplay');
+      stopCamera();
     }
 
     /* ========== SOUND (WebAudio) ========== */
@@ -779,8 +748,7 @@
     const noItemsPlaceholder = document.getElementById('noItemsPlaceholder');
 
     function clearDeck(){
-      if(!deckContainer) return;
-      deckContainer.querySelectorAll('.card').forEach(n=>n.remove());
+      deckContainer && deckContainer.querySelectorAll('.card').forEach(n=>n.remove());
     }
 
     // create a card element from item
@@ -817,24 +785,26 @@
     }
 
     function renderDeck(){
-      if(!deckContainer) return;
       clearDeck();
       if (!matchedItems || matchedItems.length===0){
-        if(noItemsPlaceholder) noItemsPlaceholder.style.display = 'block';
-        if(undoBtn) undoBtn.disabled = swipeHistory.length === 0;
+        noItemsPlaceholder.style.display = 'block';
+        undoBtn.disabled = swipeHistory.length === 0;
         return;
       }
-      if(noItemsPlaceholder) noItemsPlaceholder.style.display = 'none';
+      noItemsPlaceholder.style.display = 'none';
 
+      // show up to 3 cards: top is currentIndex, behind are currentIndex+1, +2
       const visible = matchedItems.slice(currentIndex, currentIndex+3);
+      // render back ones first
       visible.reverse().forEach((it, revIdx) => {
-        const idxFromTop = revIdx;
+        const idxFromTop = revIdx; // 0 = top, 1 = back-1, 2 = back-2
         const cardEl = createCardElement(it, idxFromTop);
+        // style z-index such that top is highest
         cardEl.style.zIndex = 50 + (3 - revIdx);
         deckContainer.appendChild(cardEl);
       });
 
-      if(undoBtn) undoBtn.disabled = swipeHistory.length === 0;
+      undoBtn.disabled = swipeHistory.length === 0;
     }
 
     // helper: escape HTML for safety
@@ -857,7 +827,8 @@
         startX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
         startY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
         card.classList.add('dragging');
-        if (card.setPointerCapture) try{ card.setPointerCapture(e.pointerId); }catch(e){}
+        // ensure pointer capture
+        if (card.setPointerCapture) try { card.setPointerCapture(e.pointerId); } catch(err){}
       }
       function onMove(e){
         if (!isDragging) return;
@@ -873,20 +844,25 @@
         card.classList.remove('dragging');
 
         const movedX = currentX;
+        // accept
         if (movedX > threshold){
+          // animate off screen right
           card.style.transition = 'transform .36s cubic-bezier(.2,.9,.3,1), opacity .24s';
           card.style.transform = `translate(${window.innerWidth}px, ${currentY}px) rotate(18deg)`;
           card.style.opacity = 0;
           playSound('match');
+          // register accept
           swipeHistory.push({ index: currentIndex, action: 'accept', item });
           matchedItem = item;
           currentIndex++;
           setTimeout(()=> {
             renderDeck();
+            // show match flow
             showMatchFlow(item);
           }, 260);
           return;
         }
+        // reject
         if (movedX < -threshold){
           card.style.transition = 'transform .36s cubic-bezier(.2,.9,.3,1), opacity .24s';
           card.style.transform = `translate(-${window.innerWidth}px, ${currentY}px) rotate(-18deg)`;
@@ -898,6 +874,7 @@
           return;
         }
 
+        // default: spring back
         card.style.transition = 'transform .28s cubic-bezier(.2,.9,.3,1)';
         card.style.transform = '';
         card.style.opacity = 1;
@@ -909,6 +886,7 @@
     function manualAccept(){
       if (!matchedItems || currentIndex >= matchedItems.length) return;
       const item = matchedItems[currentIndex];
+      // animate top card quickly then do match
       const top = deckContainer.querySelector('.card');
       if (top){
         top.style.transition = 'transform .36s cubic-bezier(.2,.9,.3,1), opacity .24s';
@@ -941,12 +919,23 @@
       const last = swipeHistory.pop();
       currentIndex = last.index;
       renderDeck();
-      if(undoBtn) undoBtn.disabled = swipeHistory.length === 0;
+      undoBtn.disabled = swipeHistory.length === 0;
     }
 
     function viewOnMap(lat,lng){
       if (!lat && !lng) { alert('Location not available'); return; }
-      window.open(`https://maps.google.com?q=${lat},${lng}`, '_blank', 'noopener');
+      const q = encodeURIComponent(`${lat},${lng}`);
+      window.open(`https://maps.google.com?q=${q}`, '_blank', 'noopener');
+    }
+
+    function viewOnMapFromFound(){
+      const lat = document.getElementById('foundLat').value;
+      const lng = document.getElementById('foundLng').value;
+      if (!lat || !lng) {
+        alert('Coordinates not available');
+        return;
+      }
+      viewOnMap(lat, lng);
     }
 
     // loadMatchedItems - to be called by backend with array of matches
@@ -968,6 +957,7 @@
     function showMatchFlow(item){
       document.getElementById('matchInfo').textContent = item && item.name ? `You matched with ${item.finderName || 'Finder'} — ${item.name}` : 'You matched!';
       openModalById('matchModal');
+      // after short delay, open chat automatically
       setTimeout(()=> {
         closeModalById('matchModal');
         openMatchChat();
@@ -1015,10 +1005,13 @@
     function redeemCoupon(btn){
       const code = btn.getAttribute('data-code');
       if (!code) return;
+      // copy to clipboard
       navigator.clipboard && navigator.clipboard.writeText(code).catch(()=>{});
+      // visual feedback
       btn.disabled = true;
       btn.classList.add('active');
       btn.textContent = 'Copied ✓';
+      // show toast
       const toast = document.getElementById('couponToast');
       toast.textContent = `Coupon ${code} copied to clipboard`;
       toast.classList.add('show');
@@ -1027,22 +1020,231 @@
 
     /* ========== Misc initialisation ========== */
     document.addEventListener('DOMContentLoaded', () => {
+      // show tutorial overlay only once (simple)
       if (!localStorage.getItem('hasSeenTutorial')) {
-        openModalById('updatesModal');
+        openModalById('updatesModal'); // light way to show something; remove if undesired
         localStorage.setItem('hasSeenTutorial','true');
       }
-      initStars();
-      updateStars();
-      // Attach preview handler for file inputs if user selects camera image via OS camera UI
-      const lostFile = document.getElementById('lostImageInput');
-      if(lostFile) lostFile.addEventListener('change', (e)=> handleImagePreview(lostFile, 'lostImagePreview'));
-      const foundFile = document.getElementById('foundImageInput');
-      if(foundFile) foundFile.addEventListener('change', (e)=> handleImagePreview(foundFile, 'foundImagePreview'));
+      // initialize star visuals
+      try{ updateStars(); }catch(e){}
     });
 
     // Initialize star visuals (if script loaded after DOM)
-    function updateStars(){ /* wrapper used above */ const s = window._starButtons || []; s.forEach((b,i)=> b.style.opacity = (i < currentRating ? '1' : '0.5')); }
+    try{ updateStars(); }catch(e){}
+
+    /* ========== GEOLOCATION (Found modal) ========== */
+    let foundGeoWatchId = null;
+    async function fetchFoundLocation(){
+      const coordsEl = document.getElementById('foundCoords');
+      const accEl = document.getElementById('foundAccuracy');
+      const locInput = document.getElementById('foundLocation');
+      const msgEl = document.getElementById('foundGeoMessage');
+
+      coordsEl.textContent = 'Getting coords…';
+      accEl.textContent = '';
+      msgEl.textContent = 'Attempting to get precise location…';
+
+      if (!navigator.geolocation) {
+        coordsEl.textContent = 'Geolocation unsupported';
+        msgEl.textContent = 'Your browser does not support geolocation.';
+        return;
+      }
+
+      const options = { enableHighAccuracy: true, maximumAge: 0, timeout: 12000 };
+
+      // Try getCurrentPosition first for a quick fix
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        applyFoundPosition(position);
+        // Start a short watch to improve accuracy a bit (stop after a while)
+        if (foundGeoWatchId === null) {
+          try {
+            foundGeoWatchId = navigator.geolocation.watchPosition((pos) => {
+              // if improved accuracy, override
+              const oldAcc = Number(document.getElementById('foundAccuracy').getAttribute('data-acc') || 99999);
+              if (pos.coords.accuracy < oldAcc) applyFoundPosition(pos);
+            }, (err) => {
+              console.warn('watchPosition error', err);
+            }, { enableHighAccuracy: true, maximumAge:0, timeout:10000 });
+            // stop watch after 10s
+            setTimeout(()=>{ if (foundGeoWatchId !== null) { navigator.geolocation.clearWatch(foundGeoWatchId); foundGeoWatchId = null; } }, 10000);
+          } catch(e){ foundGeoWatchId = null; }
+        }
+      }, (err) => {
+        coordsEl.textContent = 'Permission denied or unavailable';
+        msgEl.textContent = 'Allow location permissions or try again.';
+      }, options);
+    }
+
+    function applyFoundPosition(position){
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      const acc = position.coords.accuracy; // meters
+      document.getElementById('foundLat').value = lat;
+      document.getElementById('foundLng').value = lng;
+      document.getElementById('foundCoords').textContent = `${lat.toFixed(6)} · ${lng.toFixed(6)}`;
+      const accEl = document.getElementById('foundAccuracy');
+      accEl.textContent = `${Math.round(acc)} m`;
+      accEl.setAttribute('data-acc', String(acc));
+      const msgEl = document.getElementById('foundGeoMessage');
+
+      // If accuracy is high (small number), try reverse geocode for friendly name
+      if (acc <= 50) {
+        msgEl.textContent = `Accurate to ~${Math.round(acc)} m`;
+        // attempt reverse-geocoding (OpenStreetMap Nominatim). If blocked, fallback to coordinates.
+        reverseGeocode(lat, lng).then((label) => {
+          if (label) {
+            const locInput = document.getElementById('foundLocation');
+            locInput.value = label;
+          } else {
+            // leave coords in field
+            const locInput = document.getElementById('foundLocation');
+            if (!locInput.value || locInput.value.trim() === '' || locInput.value.includes('Fetching')) {
+              locInput.value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+            }
+          }
+        }).catch(()=> {
+          const locInput = document.getElementById('foundLocation');
+          if (!locInput.value || locInput.value.trim() === '' || locInput.value.includes('Fetching')) {
+            locInput.value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+          }
+        });
+      } else {
+        // low accuracy
+        msgEl.textContent = `Low accuracy (~${Math.round(acc)} m). Try moving outdoors and press Refresh.`;
+        const locInput = document.getElementById('foundLocation');
+        if (!locInput.value || locInput.value.trim() === '' || locInput.value.includes('Fetching')) {
+          locInput.value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        }
+      }
+    }
+
+    async function reverseGeocode(lat, lng){
+      try {
+        // Use OpenStreetMap Nominatim reverse geocoding (no API key). Respect rate limits.
+        const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lng)}`;
+        const res = await fetch(url, { headers: { 'Accept': 'application/json' }});
+        if (!res.ok) return null;
+        const data = await res.json();
+        // prefer display_name or a short address
+        if (data && data.display_name) {
+          // trim to 2-3 components for clean look
+          const parts = data.display_name.split(',').map(s => s.trim());
+          return parts.slice(0,3).join(', ');
+        }
+        return null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function refreshFoundLocation(){
+      document.getElementById('foundGeoMessage').textContent = 'Refreshing location…';
+      fetchFoundLocation();
+    }
+
+    /* ========== CAMERA (Found modal) ========== */
+    let cameraStreamTrack = null;
+    let cameraMediaStream = null;
+    let lastCapturedBlob = null;
+
+    async function startCamera(){
+      const video = document.getElementById('cameraStream');
+      const startBtn = document.getElementById('startCameraBtn');
+      const takeBtn = document.getElementById('takePhotoBtn');
+      const stopBtn = document.getElementById('stopCameraBtn');
+      const useBtn = document.getElementById('usePhotoBtn');
+      try {
+        // prefer back camera if available
+        const constraints = { video: { facingMode: { ideal: "environment" }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false };
+        cameraMediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = cameraMediaStream;
+        cameraStreamTrack = cameraMediaStream.getVideoTracks()[0];
+        video.classList.remove('hidden');
+        takeBtn.classList.remove('hidden');
+        stopBtn.classList.remove('hidden');
+        useBtn.classList.add('hidden'); // until a photo captured
+        startBtn.classList.add('hidden');
+        document.getElementById('cameraHint').textContent = 'Camera open — tap Capture to take a photo.';
+      } catch (err) {
+        console.warn('Camera start error', err);
+        document.getElementById('cameraHint').textContent = 'Camera permission denied or not available. Use Upload instead.';
+        alert('Unable to open camera. Please allow camera permission or upload an image.');
+      }
+    }
+
+    function stopCamera(){
+      const video = document.getElementById('cameraStream');
+      const startBtn = document.getElementById('startCameraBtn');
+      const takeBtn = document.getElementById('takePhotoBtn');
+      const stopBtn = document.getElementById('stopCameraBtn');
+      const useBtn = document.getElementById('usePhotoBtn');
+
+      if (cameraMediaStream) {
+        cameraMediaStream.getTracks().forEach(t => t.stop());
+        cameraMediaStream = null;
+      }
+      cameraStreamTrack = null;
+      video.srcObject = null;
+      video.classList.add('hidden');
+      takeBtn.classList.add('hidden');
+      stopBtn.classList.add('hidden');
+      useBtn.classList.add('hidden');
+      startBtn.classList.remove('hidden');
+      document.getElementById('cameraHint').textContent = 'Tip: Use the camera for a quick photo. If permission denied, upload from gallery.';
+    }
+
+    function takePhoto(){
+      const video = document.getElementById('cameraStream');
+      const canvas = document.getElementById('captureCanvas');
+      const useBtn = document.getElementById('usePhotoBtn');
+      canvas.width = video.videoWidth || 1280;
+      canvas.height = video.videoHeight || 720;
+      const ctx = canvas.getContext('2d');
+      try {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob((blob) => {
+          if (!blob) return;
+          lastCapturedBlob = blob;
+          // show preview
+          const preview = document.getElementById('foundImagePreview');
+          preview.src = URL.createObjectURL(blob);
+          preview.style.display = 'block';
+          // enable Use Photo button
+          useBtn.classList.remove('hidden');
+          document.getElementById('cameraHint').textContent = 'Captured — press Use Photo to attach this image.';
+        }, 'image/jpeg', 0.92);
+      } catch(e){
+        console.warn('capture error', e);
+        alert('Capture failed. Try again or upload an image.');
+      }
+    }
+
+    function useCapturedPhoto(){
+      if (!lastCapturedBlob) return;
+      // convert blob to a File and place into the file input so backend can read it like a normal upload
+      const fileName = `found-${Date.now()}.jpg`;
+      const file = new File([lastCapturedBlob], fileName, { type: lastCapturedBlob.type });
+      // assign to file input via DataTransfer
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      const input = document.getElementById('foundImageInput');
+      input.files = dt.files;
+      // show preview is already set
+      // stop camera to save battery
+      stopCamera();
+      document.getElementById('cameraHint').textContent = 'Photo attached. You can change it by uploading another image.';
+    }
+
+    /* ========== Misc helpers ========== */
+    function applyEscapeHtmlToInputValues() {
+      // placeholder if needed later
+    }
+
+    // defensive: stop camera when navigating away
+    window.addEventListener('beforeunload', () => stopCamera());
+
   </script>
 </body>
 </html>
+
 
